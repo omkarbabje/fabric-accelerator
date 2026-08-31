@@ -116,8 +116,8 @@ jobs:
             wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l | grep "${WORKSPACE_NAME}.ManagedIdentity" | awk '{print $2}' | tr -d '\r\n')
            
             fab acl get "${WORKSPACE_NAME}.Workspace" -q "[?principal.servicePrincipalDetails.aadAppId=='${wIObjId}'] | length(@)" | grep -q '^[1-9]' \
-              && echo "Workspace identity already has an ACL in workspace" \
-              || fab acl set "${WORKSPACE_NAME}.Workspace" -I "$wIObjId" -R contributor -f
+             && echo "Workspace identity already has an ACL in workspace" \
+             || fab acl set "${WORKSPACE_NAME}.Workspace" -I "$wIObjId" -R contributor -f
 
         # Delete Eventstream if it exists (TEMP WORKAROUND for issue with existing Eventstream during redeployments)
         - name: Delete Eventstream if it exists

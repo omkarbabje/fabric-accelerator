@@ -115,7 +115,7 @@ jobs:
 
             wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l | grep "${WORKSPACE_NAME}.ManagedIdentity" | awk '{print $3}' | tr -d '\r\n')
            
-            fab acl get "${WORKSPACE_NAME}.Workspace" -q "[?principal.servicePrincipalDetails.aadAppId=='${wIObjId}'] | length(@)" | grep -q '^[1-9]' \
+            fab acl get "${WORKSPACE_NAME}.Workspace" -q "[?principal.id=='${wIObjId}'] | length(@)" | grep -q '^[1-9]' \
              && echo "Workspace identity already has an ACL in workspace" \
              || fab acl set "${WORKSPACE_NAME}.Workspace" -I "$wIObjId" -R contributor -f
              

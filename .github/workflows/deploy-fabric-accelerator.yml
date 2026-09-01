@@ -108,19 +108,18 @@ jobs:
             NEW_FABRIC_WORKSPACE_ID=$(fab get $WORKSPACE_NAME.Workspace -q id | tr -d '\r')
             echo "NEW_FABRIC_WORKSPACE_ID=$NEW_FABRIC_WORKSPACE_ID" >> $GITHUB_ENV
 
-        # Enable workspace Identity and grant contributor role
-# Workspace identity
-        - name: Verify workspace identity
-          run: |
-            echo "Checking workspace managed identity..."
-        
-            if fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true; then
-              echo "Workspace managed identity exists."
-            else
-              echo "Workspace managed identity does not exist."
-              echo "Please enable the workspace identity from Fabric before running deployment."
-              exit 1
-            fi
+              # Enable workspace Identity and grant contributor role
+              - name: Verify workspace identity
+                run: |
+                  echo "Checking workspace managed identity..."
+              
+                  if fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true; then
+                    echo "Workspace managed identity exists."
+                  else
+                    echo "Workspace managed identity does not exist."
+                    echo "Please enable the workspace identity from Fabric before running deployment."
+                    exit 1
+                  fi
         
                 # Delete Eventstream if it exists (TEMP WORKAROUND for issue with existing Eventstream during redeployments)
                 - name: Delete Eventstream if it exists

@@ -6,7 +6,7 @@ env:
   FABRIC_CAPACITY_SKU: F2
   FABRIC_CAPACITY_ADMIN_ID: f307cb4e-10d6-440b-b3c1-6face6aca616
   RESOURCE_GROUP: rg-fabric-accelerator
-  WORKSPACE_NAME: POCAgents
+  WORKSPACE_NAME: FabricDemokrishna
   WORKSPACE_ADMIN_ID: 895ebb0f-5ffe-4d4f-8161-9485642d783e
   WORKSPACE_ADMIN_TYPE: user # valid values: user, group
   FABRIC_SQL_DB_NAME: controldb-fabric-accelerator

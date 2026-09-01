@@ -115,12 +115,10 @@ jobs:
 
              wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l | grep "${WORKSPACE_NAME}.ManagedIdentity" | awk '{print $2}' | tr -d '\r\n')
 
-              echo "DEBUG - Workspace Identity Object ID: [$wIObjId]"
+              echo "DEBUG - Managed identities:"
+              fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l
 
-             echo "DEBUG - ACL query result:"
-              fab acl get "${WORKSPACE_NAME}.Workspace" -q "[?principal.id=='${wIObjId}'] | length(@)"
-
-              echo "DEBUG - End ACL check"
+              echo "DEBUG - End managed identities"
 
         # Delete Eventstream if it exists (TEMP WORKAROUND for issue with existing Eventstream during redeployments)
         - name: Delete Eventstream if it exists

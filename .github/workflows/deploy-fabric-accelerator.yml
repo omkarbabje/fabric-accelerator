@@ -109,30 +109,25 @@ jobs:
             echo "NEW_FABRIC_WORKSPACE_ID=$NEW_FABRIC_WORKSPACE_ID" >> $GITHUB_ENV
 
         # Enable workspace Identity and grant contributor role
-        - name: Enable workspace identity and grant contributor role
+# Workspace identity
+        - name: Verify workspace identity
           run: |
-            fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true || fab create "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity"
-
-            wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" | grep "${WORKSPACE_NAME}.ManagedIdentity" | awk '{print $2}' | tr -d '\r\n')
-
-            echo "Workspace Identity Object ID: [$wIObjId]"
-
-            aclCount=$(fab acl get "${WORKSPACE_NAME}.Workspace" -q "[?principal.id=='${wIObjId}'] | length(@)" | tr -d '\r\n')
-
-            echo "Workspace Identity ACL count: [$aclCount]"
-            
-            if [ "$aclCount" -gt 0 ]; then
-             echo "Workspace identity already has an ACL in workspace"
+            echo "Checking workspace managed identity..."
+        
+            if fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true; then
+              echo "Workspace managed identity exists."
             else
-              fab acl set "${WORKSPACE_NAME}.Workspace" -I "$wIObjId" -R contributor -f
+              echo "Workspace managed identity does not exist."
+              echo "Please enable the workspace identity from Fabric before running deployment."
+              exit 1
             fi
-
-        # Delete Eventstream if it exists (TEMP WORKAROUND for issue with existing Eventstream during redeployments)
-        - name: Delete Eventstream if it exists
-          run: |
-            set +x
-            fab exists "$WORKSPACE_NAME.Workspace/es_fabricEvents.EventStream" | grep -q true && fab rm "$WORKSPACE_NAME.Workspace/es_fabricEvents.EventStream" -f
-            set -x
+        
+                # Delete Eventstream if it exists (TEMP WORKAROUND for issue with existing Eventstream during redeployments)
+                - name: Delete Eventstream if it exists
+                  run: |
+                    set +x
+                    fab exists "$WORKSPACE_NAME.Workspace/es_fabricEvents.EventStream" | grep -q true && fab rm "$WORKSPACE_NAME.Workspace/es_fabricEvents.EventStream" -f
+                    set -x
 
        # Create Folders if they do not exist
         - name: Create folders if they do not exist

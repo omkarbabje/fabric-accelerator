@@ -111,22 +111,21 @@ jobs:
         # Enable workspace Identity and grant contributor role
         - name: Enable workspace identity and grant contributor role
           run: |
-                   fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true || fab create "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity"
+                fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true || fab create "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity"
 
-                    wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l --output_format json -q "[].servicePrincipalId" | jq -r '.result.data[0]')
+                wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" --output_format json -q "[?name=='${WORKSPACE_NAME}.ManagedIdentity'].servicePrincipalId | [0]")
 
-                    echo "Workspace Identity Object ID: [$wIObjId]"
+                echo "DEBUG - Workspace Identity Object ID: [$wIObjId]"
 
-                         aclCount=$(fab acl get "${WORKSPACE_NAME}.Workspace" -q "[?principal.id=='${wIObjId}'] | length(@)")
+                aclCount=$(fab acl get "${WORKSPACE_NAME}.Workspace" --output_format json -q "[?principal.id=='${wIObjId}'] | length(@)")
 
-                      echo "Workspace Identity ACL count: [$aclCount]"
+                echo "DEBUG - ACL count: [$aclCount]"
 
-                        if [ "$aclCount" -gt 0 ]; then
-                           echo "Workspace identity already has an ACL in workspace"
-                       else
-                           echo "Workspace identity does not have an ACL. Granting Contributor role..."
-                           fab acl set "${WORKSPACE_NAME}.Workspace" -I "$wIObjId" -R contributor -f
-                        fi
+                if [ "$aclCount" -gt 0 ]; then
+                  echo "Workspace identity already has an ACL in workspace"
+                else
+                  fab acl set "${WORKSPACE_NAME}.Workspace" -I "$wIObjId" -R contributor -f
+                fi
 
         # Delete Eventstream if it exists (TEMP WORKAROUND for issue with existing Eventstream during redeployments)
         - name: Delete Eventstream if it exists

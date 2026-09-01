@@ -113,10 +113,8 @@ jobs:
           run: |
            fab exists "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity" | grep -q true || fab create "${WORKSPACE_NAME}.Workspace/.managedidentities/${WORKSPACE_NAME}.ManagedIdentity"
 
-             wIObjId=$(fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l | grep "${WORKSPACE_NAME}.ManagedIdentity" | awk '{print $2}' | tr -d '\r\n')
-
-              echo "DEBUG - Managed identities:"
-              fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l
+             echo "DEBUG - Managed identities:"
+             fab ls "${WORKSPACE_NAME}.Workspace/.managedidentities" -l
 
               echo "DEBUG - End managed identities"
 
